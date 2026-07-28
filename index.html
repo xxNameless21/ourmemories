@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories | Photobox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'romantic-red': '#8B0000',
+                        'romantic-dark': '#5c0000',
+                        'romantic-light': '#a11c1c',
+                        'cream': '#FFFDD0'
+                    },
+                    fontFamily: {
+                        'serif': ['"Playfair Display"', 'serif'],
+                        'sans': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for aesthetic touches */
+        body {
+            background-color: #8B0000;
+            background-image: radial-gradient(circle at center, #a11c1c 0%, #8B0000 50%, #4a0000 100%);
+            color: #FFFDD0;
+            min-height: 100vh;
+        }
+
+        /* Subtle background pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Photo card styling */
+        .photo-card {
+            background: white;
+            padding: 10px;
+            padding-bottom: 25px; /* Polaroid effect */
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            z-index: 10;
+        }
+
+        /* Styling for the large photostrip */
+        .photostrip {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid #eee;
+        }
+
+        .strip-header {
+            text-align: center;
+            color: black;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .strip-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .strip-subtitle {
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Heart animation */
+        @keyframes floatHeart {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            bottom: -20px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 24px;
+            animation: floatHeart 10s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Modal styling for image viewer */
+        #imageModal {
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            max-height: 90vh;
+            max-width: 90vw;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+
+    <div id="openingScreen" class="fixed inset-0 z-[100] bg-[#5c0000] flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out">
+        <p class="font-serif italic text-xl text-cream/80 mb-6 tracking-wider">Untukmu...</p>
+        <button id="readyBtn" class="group relative font-serif text-5xl md:text-7xl font-bold text-cream tracking-widest hover:scale-105 transition-all duration-500 cursor-pointer outline-none">
+            <span class="relative z-10">READY?</span>
+            <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-1 bg-cream transition-all duration-500 group-hover:w-full"></span>
+        </button>
+        <p class="mt-12 text-sm text-cream/60 font-light tracking-widest animate-pulse">KLIK UNTUK MEMBUKA</p>
+    </div>
+
+    <div class="bg-pattern"></div>
+    <div id="hearts-container"></div>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="https://feeldreams.github.io/maukahkamu/seandainya.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Music Button -->
+    <button id="musicBtn" onclick="toggleMusic()" class="fixed bottom-6 right-6 z-50 bg-white/20 backdrop-blur-md border border-white/30 text-cream p-4 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.3)] hover:bg-white/30 transition-all duration-300 flex items-center justify-center w-14 h-14 group">
+        <i id="musicIcon" class="fa-solid fa-music text-xl group-hover:scale-110 transition-transform"></i>
+    </button>
+
+    <header class="pt-16 pb-12 px-4 text-center relative z-10">
+        <h1 class="font-serif text-5xl md:text-6xl font-bold mb-4 tracking-wide text-cream drop-shadow-lg">
+            Our Memories
+        </h1>
+        <p class="font-serif italic text-xl md:text-2xl text-cream opacity-90 mb-6">
+            "Every picture tells our story"
+        </p>
+        <div class="max-w-2xl mx-auto bg-black/20 backdrop-blur-sm p-4 rounded-lg border border-white/10">
+            <p class="text-sm md:text-base font-light tracking-wider">
+                <i class="fa-solid fa-heart text-red-400 mr-2"></i>
+                Silahkan nikmati momen indah kita.
+                <i class="fa-solid fa-heart text-red-400 ml-2"></i>
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pb-24 relative z-10">
+        
+        <!-- Top Section: Main Photostrip and Videos -->
+        <div class="flex flex-col lg:flex-row justify-center items-start gap-10 mb-16">
+            
+            <!-- The Photostrip (Sekarang menggunakan 1 gambar utuh) -->
+            <div class="w-full lg:w-1/3 flex flex-col items-center">
+                <div class="photostrip p-0 overflow-hidden w-full max-w-sm cursor-pointer hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                    <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto object-cover" alt="Our Photostrip">
+                </div>
+            </div>
+
+            <!-- Videos / Gifs Section -->
+            <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-8 justify-center">
+                
+                <!-- Slot 1: Foto Portrait -->
+                <div class="flex flex-col items-center w-full sm:w-1/2">
+                    <div class="photo-card w-full">
+                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                            <!-- Ganti ke aspect-[3/4] agar bentuknya berdiri tegak -->
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto rounded object-cover aspect-[3/4]" alt="Portrait Photo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slot 2: Video MP4 Portrait -->
+                <div class="flex flex-col items-center w-full sm:w-1/2">
+                    <div class="photo-card w-full">
+                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4')">
+                            <!-- Menggunakan tag video sebagai thumbnail, memutar otomatis tanpa suara -->
+                            <video src="https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4" class="w-full h-auto rounded object-cover aspect-[3/4]" autoplay muted loop playsinline></video>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Bottom Section: Individual Photos Grid -->
+        <h2 class="text-center font-serif text-3xl mb-8 text-cream border-b border-cream/20 pb-4 max-w-xs mx-auto">Moments</h2>
+        
+        <!-- Diubah menjadi flex wrap agar 5 item bisa saling menyesuaikan ke tengah -->
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8 max-w-6xl mx-auto">
+            
+            <!-- Moment 1 -->
+            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
+                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
+                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 1">
+                </div>
+            </div>
+
+            <!-- Moment 2 -->
+            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
+                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid3.jpg')">
+                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid3.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 2">
+                </div>
+            </div>
+
+            <!-- Moment 3 -->
+            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
+                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid4.jpg')">
+                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid4.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 3">
+                </div>
+            </div>
+
+            <!-- Moment 4 -->
+            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
+                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid5.jpg')">
+                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid5.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 4">
+                </div>
+            </div>
+
+            <!-- Moment 5 (Video MP4) -->
+            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
+                <div class="photo-card w-full">
+                    <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4')">
+                        <video src="https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4" class="w-full aspect-[4/3] object-cover rounded" autoplay muted loop playsinline></video>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
+        <p>Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> for us.</p>
+    </footer>
+
+    <!-- Modal for viewing full images -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <!-- Close button -->
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-white hover:text-red-400 transition-colors z-50">
+            <i class="fa-solid fa-xmark text-4xl"></i>
+        </button>
+        
+        <!-- Image container -->
+        <div class="relative w-full h-full flex flex-col items-center justify-center" onclick="closeModal()">
+            <img id="modalImage" src="" alt="Full size image" class="modal-content rounded-lg shadow-2xl border-4 border-white/10" onclick="event.stopPropagation();">
+            <!-- Tambahan tag video untuk modal mp4 -->
+            <video id="modalVideo" src="" class="modal-content rounded-lg shadow-2xl border-4 border-white/10 hidden" controls autoplay onclick="event.stopPropagation();"></video>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts animation in the background
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 15; // Number of hearts on screen
+
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('i');
+                    heart.className = 'fa-solid fa-heart floating-heart';
+                    
+                    // Randomize position, size, and animation duration
+                    const leftPos = Math.random() * 100;
+                    const size = Math.random() * 20 + 10;
+                    const duration = Math.random() * 10 + 15;
+                    const delay = Math.random() * 5;
+
+                    heart.style.left = `${leftPos}vw`;
+                    heart.style.fontSize = `${size}px`;
+                    heart.style.animationDuration = `${duration}s`;
+                    heart.style.animationDelay = `${delay}s`;
+
+                    container.appendChild(heart);
+
+                    // Remove heart after animation and create a new one to loop
+                    heart.addEventListener('animationend', () => {
+                        heart.remove();
+                        createSingleHeart(container);
+                    });
+                }, i * 1000); // Stagger initial spawn
+            }
+        }
+
+        function createSingleHeart(container) {
+            const heart = document.createElement('i');
+            heart.className = 'fa-solid fa-heart floating-heart';
+            const leftPos = Math.random() * 100;
+            const size = Math.random() * 20 + 10;
+            const duration = Math.random() * 10 + 15;
+            
+            heart.style.left = `${leftPos}vw`;
+            heart.style.fontSize = `${size}px`;
+            heart.style.animationDuration = `${duration}s`;
+            
+            container.appendChild(heart);
+            heart.addEventListener('animationend', () => {
+                heart.remove();
+                createSingleHeart(container);
+            });
+        }
+
+        // Initialize background hearts
+        createHearts();
+
+        // Modal (Lightbox) Logic
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalVid = document.getElementById('modalVideo');
+
+        function openModal(mediaSrc) {
+            // Cek apakah file adalah video mp4
+            if (mediaSrc.toLowerCase().endsWith('.mp4')) {
+                modalImg.classList.add('hidden');
+                modalVid.classList.remove('hidden');
+                modalVid.src = mediaSrc;
+            } else {
+                modalVid.classList.add('hidden');
+                modalImg.classList.remove('hidden');
+                modalImg.src = mediaSrc;
+            }
+            
+            modal.classList.remove('hidden');
+            // Small delay to allow display block to apply before changing opacity for transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+            }, 10);
+            
+            // Prevent scrolling on background when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            
+            // Wait for transition to finish before hiding element
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalImg.src = ''; // Clear source to prevent flashing next time
+                
+                // Matikan dan kosongkan video
+                modalVid.pause();
+                modalVid.src = ''; 
+                
+                // Restore scrolling
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Music Player & Opening Logic
+        const bgMusic = document.getElementById('bgMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        const openingScreen = document.getElementById('openingScreen');
+        const readyBtn = document.getElementById('readyBtn');
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicIcon.className = 'fa-solid fa-music text-xl group-hover:scale-110 transition-transform';
+            } else {
+                bgMusic.play();
+                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // Ketika tombol READY diklik
+        readyBtn.addEventListener('click', function() {
+            // 1. Jalankan lagu
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
+            }).catch((error) => {
+                console.log("Autoplay blocked.");
+            });
+
+            // 2. Hilangkan layar pembuka (fade out)
+            openingScreen.classList.remove('opacity-100');
+            openingScreen.classList.add('opacity-0');
+            
+            // 3. Hapus elemen dari HTML setelah animasi fade selesai agar tidak menghalangi klik di galeri
+            setTimeout(() => {
+                openingScreen.style.display = 'none';
+            }, 1000); // 1000ms = 1 detik, sesuai dengan durasi transisi di class HTML
+        });
+
+    </script>
+</body>
+</html>
