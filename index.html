@@ -124,17 +124,30 @@
             max-width: 90vw;
             object-fit: contain;
         }
+
+        /* Cursor blinking for typing effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="font-sans antialiased overflow-x-hidden">
 
-    <div id="openingScreen" class="fixed inset-0 z-[100] bg-[#5c0000] flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out">
-        <p class="font-serif italic text-xl text-cream/80 mb-6 tracking-wider">Untukmu...</p>
-        <button id="readyBtn" class="group relative font-serif text-5xl md:text-7xl font-bold text-cream tracking-widest hover:scale-105 transition-all duration-500 cursor-pointer outline-none">
+    <div id="typingScreen" class="fixed inset-0 z-[200] bg-[#050000] flex flex-col items-center justify-center px-6 md:px-12 transition-opacity duration-[2000ms] ease-in-out">
+        <p id="typingText" class="font-serif text-base md:text-xl text-cream/80 text-center leading-loose tracking-wide typing-cursor min-h-[150px]"></p>
+    </div>
+
+    <div id="openingScreen" class="fixed inset-0 z-[100] bg-[#5c0000] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out cursor-pointer transform origin-center">
+        <p class="font-serif italic text-lg md:text-xl text-cream/80 mb-6 tracking-wider pointer-events-none">Untukmu...</p>
+        <button id="readyBtn" class="group relative font-serif text-4xl sm:text-5xl md:text-7xl font-bold text-cream tracking-widest hover:scale-105 transition-all duration-500 outline-none pointer-events-none">
             <span class="relative z-10">READY?</span>
             <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-1 bg-cream transition-all duration-500 group-hover:w-full"></span>
         </button>
-        <p class="mt-12 text-sm text-cream/60 font-light tracking-widest animate-pulse">KLIK UNTUK MEMBUKA</p>
+        <p class="mt-12 text-xs md:text-sm text-cream/60 font-light tracking-widest animate-pulse pointer-events-none text-center px-4">KLIK DI MANA SAJA UNTUK MEMBUKA</p>
     </div>
 
     <div class="bg-pattern"></div>
@@ -150,109 +163,110 @@
         <i id="musicIcon" class="fa-solid fa-music text-xl group-hover:scale-110 transition-transform"></i>
     </button>
 
-    <header class="pt-16 pb-12 px-4 text-center relative z-10">
-        <h1 class="font-serif text-5xl md:text-6xl font-bold mb-4 tracking-wide text-cream drop-shadow-lg">
-            Our Memories
-        </h1>
-        <p class="font-serif italic text-xl md:text-2xl text-cream opacity-90 mb-6">
-            "Every picture tells our story"
-        </p>
-        <div class="max-w-2xl mx-auto bg-black/20 backdrop-blur-sm p-4 rounded-lg border border-white/10">
-            <p class="text-sm md:text-base font-light tracking-wider">
-                <i class="fa-solid fa-heart text-red-400 mr-2"></i>
-                Silahkan nikmati momen indah kita.
-                <i class="fa-solid fa-heart text-red-400 ml-2"></i>
+    <!-- Konten utama dibungkus untuk animasi masuk (Slide up & Fade in) -->
+    <div id="mainGallery" class="opacity-0 translate-y-12 transition-all duration-[1500ms] ease-out">
+        <header class="pt-12 md:pt-16 pb-10 md:pb-12 px-4 text-center relative z-10">
+            <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-cream drop-shadow-lg">
+                Our Memories
+            </h1>
+            <p class="font-serif italic text-lg md:text-xl lg:text-2xl text-cream opacity-90 mb-6">
+                "Every picture tells our story"
             </p>
-        </div>
-    </header>
+            <div class="max-w-2xl mx-auto bg-black/20 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-white/10 mx-4">
+                <p class="text-xs md:text-base font-light tracking-wider">
+                    <i class="fa-solid fa-heart text-red-400 mr-2"></i>
+                    chakas and sarah
+                    <i class="fa-solid fa-heart text-red-400 ml-2"></i>
+                </p>
+            </div>
+        </header>
 
-    <main class="container mx-auto px-4 pb-24 relative z-10">
-        
-        <!-- Top Section: Main Photostrip and Videos -->
-        <div class="flex flex-col lg:flex-row justify-center items-start gap-10 mb-16">
+        <main class="container mx-auto px-4 pb-24 relative z-10">
             
-            <!-- The Photostrip (Sekarang menggunakan 1 gambar utuh) -->
-            <div class="w-full lg:w-1/3 flex flex-col items-center">
-                <div class="photostrip p-0 overflow-hidden w-full max-w-sm cursor-pointer hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
-                    <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto object-cover" alt="Our Photostrip">
+            <!-- Top Section: Main Photostrip and Videos -->
+            <div class="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-8 lg:gap-10 mb-12 md:mb-16">
+                
+                <!-- The Photostrip -->
+                <div class="w-[85%] max-w-[320px] sm:max-w-sm lg:w-1/3 flex flex-col items-center">
+                    <div class="photostrip p-0 overflow-hidden w-full cursor-pointer hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                        <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto object-cover" alt="Our Photostrip">
+                    </div>
+                </div>
+
+                <!-- Videos / Gifs Section -->
+                <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center items-center">
+                    
+                    <!-- Slot 1: Foto Portrait -->
+                    <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
+                        <div class="photo-card w-full">
+                            <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                                <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto rounded object-cover aspect-[3/4]" alt="Portrait Photo">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slot 2: Video MP4 Portrait -->
+                    <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
+                        <div class="photo-card w-full">
+                            <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4')">
+                                <video src="https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4" class="w-full h-auto rounded object-cover aspect-[3/4]" autoplay muted loop playsinline></video>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 
-            <!-- Videos / Gifs Section -->
-            <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-8 justify-center">
+            <!-- Bottom Section: Individual Photos Grid -->
+            <h2 class="text-center font-serif text-2xl md:text-3xl mb-6 md:mb-8 text-cream border-b border-cream/20 pb-4 max-w-[12rem] md:max-w-xs mx-auto">Moments</h2>
+            
+            <div class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
                 
-                <!-- Slot 1: Foto Portrait -->
-                <div class="flex flex-col items-center w-full sm:w-1/2">
+                <!-- Moment 1 -->
+                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
+                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 1">
+                    </div>
+                </div>
+
+                <!-- Moment 2 -->
+                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid3.jpg')">
+                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid3.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 2">
+                    </div>
+                </div>
+
+                <!-- Moment 3 -->
+                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid4.jpg')">
+                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid4.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 3">
+                    </div>
+                </div>
+
+                <!-- Moment 4 -->
+                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid5.jpg')">
+                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid5.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 4">
+                    </div>
+                </div>
+
+                <!-- Moment 5 (Video MP4) -->
+                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
                     <div class="photo-card w-full">
-                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
-                            <!-- Ganti ke aspect-[3/4] agar bentuknya berdiri tegak -->
-                            <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto rounded object-cover aspect-[3/4]" alt="Portrait Photo">
+                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4')">
+                            <video src="https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4" class="w-full aspect-[4/3] object-cover rounded" autoplay muted loop playsinline></video>
                         </div>
                     </div>
                 </div>
 
-                <!-- Slot 2: Video MP4 Portrait -->
-                <div class="flex flex-col items-center w-full sm:w-1/2">
-                    <div class="photo-card w-full">
-                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4')">
-                            <!-- Menggunakan tag video sebagai thumbnail, memutar otomatis tanpa suara -->
-                            <video src="https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4" class="w-full h-auto rounded object-cover aspect-[3/4]" autoplay muted loop playsinline></video>
-                        </div>
-                    </div>
-                </div>
-                
             </div>
-        </div>
+        </main>
 
-        <!-- Bottom Section: Individual Photos Grid -->
-        <h2 class="text-center font-serif text-3xl mb-8 text-cream border-b border-cream/20 pb-4 max-w-xs mx-auto">Moments</h2>
-        
-        <!-- Diubah menjadi flex wrap agar 5 item bisa saling menyesuaikan ke tengah -->
-        <div class="flex flex-wrap justify-center gap-6 md:gap-8 max-w-6xl mx-auto">
-            
-            <!-- Moment 1 -->
-            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
-                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
-                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 1">
-                </div>
-            </div>
-
-            <!-- Moment 2 -->
-            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
-                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid3.jpg')">
-                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid3.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 2">
-                </div>
-            </div>
-
-            <!-- Moment 3 -->
-            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
-                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid4.jpg')">
-                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid4.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 3">
-                </div>
-            </div>
-
-            <!-- Moment 4 -->
-            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
-                <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid5.jpg')">
-                    <img src="https://xxnameless21.github.io/Koleksi-foto/grid5.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 4">
-                </div>
-            </div>
-
-            <!-- Moment 5 (Video MP4) -->
-            <div class="w-full sm:w-64 md:w-[17rem] flex flex-col items-center">
-                <div class="photo-card w-full">
-                    <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4')">
-                        <video src="https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4" class="w-full aspect-[4/3] object-cover rounded" autoplay muted loop playsinline></video>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
+        <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
     <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
         <p>Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> for us.</p>
     </footer>
+    </div> <!-- Penutup bungkus transisi galeri -->
 
     <!-- Modal for viewing full images -->
     <div id="imageModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
@@ -380,7 +394,6 @@
         const bgMusic = document.getElementById('bgMusic');
         const musicIcon = document.getElementById('musicIcon');
         const openingScreen = document.getElementById('openingScreen');
-        const readyBtn = document.getElementById('readyBtn');
         let isMusicPlaying = false;
 
         function toggleMusic() {
@@ -394,8 +407,8 @@
             isMusicPlaying = !isMusicPlaying;
         }
 
-        // Ketika tombol READY diklik
-        readyBtn.addEventListener('click', function() {
+        // Ketika layar pembuka diklik di mana saja
+        openingScreen.addEventListener('click', function() {
             // 1. Jalankan lagu
             bgMusic.play().then(() => {
                 isMusicPlaying = true;
@@ -404,15 +417,72 @@
                 console.log("Autoplay blocked.");
             });
 
-            // 2. Hilangkan layar pembuka (fade out)
+            // 2. Efek transisi layar pembuka (Zoom in, efek blur, dan fade out)
             openingScreen.classList.remove('opacity-100');
-            openingScreen.classList.add('opacity-0');
+            openingScreen.classList.add('opacity-0', 'scale-150', 'blur-md');
             
-            // 3. Hapus elemen dari HTML setelah animasi fade selesai agar tidak menghalangi klik di galeri
+            // 3. Efek galeri utama muncul perlahan dari bawah ke atas
+            const mainGallery = document.getElementById('mainGallery');
+            setTimeout(() => {
+                mainGallery.classList.remove('opacity-0', 'translate-y-12');
+                mainGallery.classList.add('opacity-100', 'translate-y-0');
+            }, 300); // Galeri mulai muncul sedikit sebelum layar merah benar-benar menghilang
+
+            // 4. Hapus elemen dari HTML setelah animasi fade selesai
             setTimeout(() => {
                 openingScreen.style.display = 'none';
-            }, 1000); // 1000ms = 1 detik, sesuai dengan durasi transisi di class HTML
+            }, 1000); // 1000ms = 1 detik, sesuai dengan durasi transisi
         });
+
+        const typingScreen = document.getElementById('typingScreen');
+        const typingText = document.getElementById('typingText');
+        
+        // Teks yang akan diketik (gunakan \n untuk baris baru)
+        const emotionalText = "Aku sadar, waktu sering kali berjalan terlalu cepat.\nMengubah momen menjadi kenangan yang samar,\ndan menyisakan rindu yang kadang tak sempat terucap...\n\nSatu hal yang harus kamu tahu...\nKe mana pun kakimu melangkah nanti,\natau seberat apa pun hari yang kamu lewati,\nkamu tidak akan pernah sendirian.\nKarena aku akan selalu siap menjadi tempat teduhmu,\ndan rumah tempatmu pulang.";
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < emotionalText.length) {
+                let char = emotionalText.charAt(charIndex);
+                
+                if (char === '\n') {
+                    typingText.innerHTML += '<br>';
+                } else {
+                    typingText.innerHTML += char;
+                }
+                charIndex++;
+                
+                // Kecepatan mengetik 1x (normal)
+                let speed = 60; // Kecepatan dasar normal
+                if (char === '.' || char === ',') {
+                    speed = 400; // Jeda saat tanda baca
+                } else {
+                    speed += Math.random() * 30; // Sedikit variasi agar terlihat natural
+                }
+                
+                setTimeout(typeWriter, speed);
+            } else {
+                // Selesai mengetik, hilangkan kursor
+                typingText.classList.remove('typing-cursor');
+                
+                // Tunggu 4 detik agar teks bisa dibaca dan diresapi, lalu fade out
+                setTimeout(() => {
+                    typingScreen.classList.remove('opacity-100');
+                    typingScreen.classList.add('opacity-0');
+                    
+                    // Hilangkan dari DOM setelah fade out selesai (durasi transisi 2 detik)
+                    setTimeout(() => {
+                        typingScreen.style.display = 'none';
+                    }, 2000);
+                }, 4000);
+            }
+        }
+
+        // Mulai efek mengetik saat website dimuat
+        window.onload = () => {
+            // Tunggu 1 detik dengan layar gelap gulita sebelum mulai mengetik
+            setTimeout(typeWriter, 1000);
+        };
 
     </script>
 </body>
