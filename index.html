@@ -36,6 +36,7 @@
             background-image: radial-gradient(circle at center, #a11c1c 0%, #8B0000 50%, #4a0000 100%);
             color: #FFFDD0;
             min-height: 100vh;
+            overflow-x: hidden; /* Mencegah layar bergeser ke samping */
         }
 
         /* Subtle background pattern */
@@ -76,28 +77,6 @@
             border: 1px solid #eee;
         }
 
-        .strip-header {
-            text-align: center;
-            color: black;
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-        }
-
-        .strip-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .strip-subtitle {
-            font-size: 0.9rem;
-            font-style: italic;
-            color: #555;
-        }
-
         /* Heart animation */
         @keyframes floatHeart {
             0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
@@ -135,12 +114,14 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased overflow-x-hidden">
+<body class="font-sans antialiased">
 
+    <!-- Layar Mengetik Gelap -->
     <div id="typingScreen" class="fixed inset-0 z-[200] bg-[#050000] flex flex-col items-center justify-center px-6 md:px-12 transition-opacity duration-[2000ms] ease-in-out">
         <p id="typingText" class="font-serif text-base md:text-xl text-cream/80 text-center leading-loose tracking-wide typing-cursor min-h-[150px]"></p>
     </div>
 
+    <!-- Layar Merah READY -->
     <div id="openingScreen" class="fixed inset-0 z-[100] bg-[#5c0000] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out cursor-pointer transform origin-center">
         <p class="font-serif italic text-lg md:text-xl text-cream/80 mb-6 tracking-wider pointer-events-none">Untukmu...</p>
         <button id="readyBtn" class="group relative font-serif text-4xl sm:text-5xl md:text-7xl font-bold text-cream tracking-widest hover:scale-105 transition-all duration-500 outline-none pointer-events-none">
@@ -153,9 +134,12 @@
     <div class="bg-pattern"></div>
     <div id="hearts-container"></div>
 
-    <!-- Audio Element -->
+    <!-- Audio Elements (2 Lagu) -->
     <audio id="bgMusic" loop>
         <source src="https://feeldreams.github.io/maukahkamu/seandainya.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgMusic2" loop>
+        <source src="https://xxnameless21.github.io/Koleksi-foto/BernadyaSatuBulan.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Floating Music Button -->
@@ -163,133 +147,218 @@
         <i id="musicIcon" class="fa-solid fa-music text-xl group-hover:scale-110 transition-transform"></i>
     </button>
 
-    <!-- Konten utama dibungkus untuk animasi masuk (Slide up & Fade in) -->
-    <div id="mainGallery" class="opacity-0 translate-y-12 transition-all duration-[1500ms] ease-out">
-        <header class="pt-12 md:pt-16 pb-10 md:pb-12 px-4 text-center relative z-10">
-            <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-cream drop-shadow-lg">
-                Our Memories
-            </h1>
-            <p class="font-serif italic text-lg md:text-xl lg:text-2xl text-cream opacity-90 mb-6">
-                "Every picture tells our story"
-            </p>
-            <div class="inline-block bg-black/20 backdrop-blur-sm px-6 py-4 rounded-lg border border-white/10 mx-4 shadow-xl">
-                <p class="text-xs md:text-base font-light tracking-widest mb-3 uppercase">
-                    <i class="fa-solid fa-heart text-red-400 mr-2"></i>
-                    chakas & sarah
-                    <i class="fa-solid fa-heart text-red-400 ml-2"></i>
+    <!-- Konten utama dibungkus untuk animasi transisi -->
+    <div id="appContainer" class="opacity-0 translate-y-12 transition-all duration-[1500ms] ease-out w-full relative">
+        
+        <!-- ================= HALAMAN 1 (GALERI) ================= -->
+        <div id="page1" class="w-full transition-all duration-700 ease-in-out transform translate-x-0 opacity-100">
+            <header class="pt-12 md:pt-16 pb-10 md:pb-12 px-4 text-center relative z-10">
+                <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-cream drop-shadow-lg">
+                    Our Memories
+                </h1>
+                <p class="font-serif italic text-lg md:text-xl lg:text-2xl text-cream opacity-90 mb-6">
+                    "Every picture tells our story"
                 </p>
-                <div class="w-full h-[1px] bg-cream/20 mb-3"></div>
-                <div class="flex justify-center items-center gap-4 sm:gap-6 text-[10px] md:text-xs font-light tracking-[0.15em] sm:tracking-[0.2em] text-cream/90 uppercase">
-                    <div class="flex flex-col items-center">
-                        <span class="text-cream/50 mb-1 text-[8px] sm:text-[10px]">Est. (Tanggal Jadian)</span>
-                        <span>27 Juni 2026</span>
-                    </div>
-                    <div class="w-[1px] h-6 bg-cream/20"></div>
-                    <div class="flex flex-col items-center">
-                        <span class="text-cream/50 mb-1 text-[8px] sm:text-[10px]">Momen Potret</span>
-                        <span>27 July 2026</span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="container mx-auto px-4 pb-24 relative z-10">
-            
-            <!-- Top Section: Main Photostrip and Videos -->
-            <div class="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-8 lg:gap-10 mb-12 md:mb-16">
-                
-                <!-- The Photostrip -->
-                <div class="w-[85%] max-w-[320px] sm:max-w-sm lg:w-1/3 flex flex-col items-center">
-                    <div class="photostrip p-0 overflow-hidden w-full cursor-pointer hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
-                        <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto object-cover" alt="Our Photostrip">
+                <div class="inline-block bg-black/20 backdrop-blur-sm px-6 py-4 rounded-lg border border-white/10 mx-4 shadow-xl">
+                    <p class="text-xs md:text-base font-light tracking-widest mb-3 uppercase">
+                        <i class="fa-solid fa-heart text-red-400 mr-2"></i>
+                        chakas & sarah
+                        <i class="fa-solid fa-heart text-red-400 ml-2"></i>
+                    </p>
+                    <div class="w-full h-[1px] bg-cream/20 mb-3"></div>
+                    <div class="flex justify-center items-center gap-4 sm:gap-6 text-[10px] md:text-xs font-light tracking-[0.15em] sm:tracking-[0.2em] text-cream/90 uppercase">
+                        <div class="flex flex-col items-center">
+                            <span class="text-cream/50 mb-1 text-[8px] sm:text-[10px]">Est. (Tanggal Jadian)</span>
+                            <span>27 Juni 2026</span>
+                        </div>
+                        <div class="w-[1px] h-6 bg-cream/20"></div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-cream/50 mb-1 text-[8px] sm:text-[10px]">Momen Potret</span>
+                            <span>27 July 2026</span>
+                        </div>
                     </div>
                 </div>
+            </header>
 
-                <!-- Videos / Gifs Section -->
-                <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center items-center">
-                    
-                    <!-- Slot 1: Foto Portrait -->
-                    <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
-                        <div class="photo-card w-full">
-                            <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
-                                <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto rounded object-cover aspect-[3/4]" alt="Portrait Photo">
-                            </div>
+            <main class="container mx-auto px-4 pb-12 relative z-10">
+                <!-- Top Section: Main Photostrip and Videos -->
+                <div class="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-8 lg:gap-10 mb-12 md:mb-16">
+                    <!-- The Photostrip -->
+                    <div class="w-[85%] max-w-[320px] sm:max-w-sm lg:w-1/3 flex flex-col items-center">
+                        <div class="photostrip p-0 overflow-hidden w-full cursor-pointer hover:shadow-[0_15px_40px_rgba(0,0,0,0.8)] transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto object-cover" alt="Our Photostrip">
                         </div>
                     </div>
 
-                    <!-- Slot 2: Video MP4 Portrait -->
-                    <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
-                        <div class="photo-card w-full">
-                            <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4')">
-                                <video src="https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4" class="w-full h-auto rounded object-cover aspect-[3/4]" autoplay muted loop playsinline></video>
+                    <!-- Videos / Gifs Section -->
+                    <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center items-center">
+                        <!-- Slot 1: Foto Portrait -->
+                        <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
+                            <div class="photo-card w-full">
+                                <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg')">
+                                    <img src="https://xxnameless21.github.io/Koleksi-foto/Grid1.jpg" class="w-full h-auto rounded object-cover aspect-[3/4]" alt="Portrait Photo">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slot 2: Video MP4 Portrait -->
+                        <div class="flex flex-col items-center w-[85%] max-w-[320px] sm:max-w-none sm:w-1/2">
+                            <div class="photo-card w-full">
+                                <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4')">
+                                    <video src="https://xxnameless21.github.io/Koleksi-foto/GIF2.mp4" class="w-full h-auto rounded object-cover aspect-[3/4]" autoplay muted loop playsinline></video>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
-            </div>
 
-            <!-- Bottom Section: Individual Photos Grid -->
-            <h2 class="text-center font-serif text-2xl md:text-3xl mb-6 md:mb-8 text-cream border-b border-cream/20 pb-4 max-w-[12rem] md:max-w-xs mx-auto">Moments</h2>
-            
-            <div class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
+                <!-- Bottom Section: Individual Photos Grid -->
+                <h2 class="text-center font-serif text-2xl md:text-3xl mb-6 md:mb-8 text-cream border-b border-cream/20 pb-4 max-w-[12rem] md:max-w-xs mx-auto">Moments</h2>
                 
-                <!-- Moment 1 -->
-                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
-                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
-                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 1">
+                <div class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
+                    <!-- Moment 1 -->
+                    <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 1">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Moment 2 -->
-                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
-                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid3.jpg')">
-                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid3.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 2">
+                    <!-- Moment 2 -->
+                    <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid3.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/grid3.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 2">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Moment 3 -->
-                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
-                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid4.jpg')">
-                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid4.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 3">
+                    <!-- Moment 3 -->
+                    <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid4.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/grid4.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 3">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Moment 4 -->
-                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
-                    <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid5.jpg')">
-                        <img src="https://xxnameless21.github.io/Koleksi-foto/grid5.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 4">
+                    <!-- Moment 4 -->
+                    <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid5.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/grid5.jpg" class="w-full aspect-[4/3] object-cover rounded" alt="Moment 4">
+                        </div>
                     </div>
-                </div>
 
-                <!-- Moment 5 (Video MP4) -->
-                <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
-                    <div class="photo-card w-full">
-                        <div class="relative group cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4')">
+                    <!-- Moment 5 (Video MP4) -->
+                    <div class="w-[46%] sm:w-56 md:w-[17rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4')">
                             <video src="https://xxnameless21.github.io/Koleksi-foto/GIF1.mp4" class="w-full aspect-[4/3] object-cover rounded pointer-events-none" autoplay muted loop playsinline></video>
                         </div>
                     </div>
                 </div>
 
-            </div>
+                <!-- Pesan Penutup Sedih (Dikembalikan ke Halaman 1) -->
+                <div class="mt-16 md:mt-24 text-center px-6 max-w-3xl mx-auto">
+                    <p class="font-serif italic text-lg md:text-2xl text-cream/90 leading-relaxed font-light tracking-wide">
+                        "Kumpulan foto ini barulah permulaan. Akan ada ribuan potret baru yang tercipta seiring panjangnya perjalanan kita."
+                    </p>
+                    <p class="font-serif italic text-base md:text-xl text-cream/50 mt-8 md:mt-10 leading-relaxed font-light tracking-wide">
+                        Tapi sekarang semua musnah, sepertinya sulit untuk memulai kembali.
+                    </p>
+                </div>
 
-            <!-- Pesan Penutup -->
-            <div class="mt-16 md:mt-24 text-center px-6 max-w-3xl mx-auto">
-                <p class="font-serif italic text-lg md:text-2xl text-cream/90 leading-relaxed font-light tracking-wide">
-                    "Kumpulan foto ini barulah permulaan. Akan ada ribuan potret baru yang tercipta seiring panjangnya perjalanan kita."
+                <!-- Tombol Halaman Selanjutnya -->
+                <div class="mt-16 text-center">
+                    <button onclick="goToPage2()" class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-cream px-8 py-3 rounded-full shadow-lg transition-all duration-300 font-serif tracking-widest text-sm hover:scale-105">
+                        LEMBARAN TERAKHIR <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </main>
+            
+            <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
+                <p>Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> for us.</p>
+            </footer>
+        </div>
+
+        <!-- ================= HALAMAN 2 (LEMBARAN TERAKHIR) ================= -->
+        <div id="page2" class="w-full transition-all duration-700 ease-in-out transform translate-x-full opacity-0 hidden absolute top-0 left-0">
+            <header class="pt-12 md:pt-16 pb-10 md:pb-12 px-4 text-center relative z-10">
+                <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 tracking-wide text-cream drop-shadow-lg">
+                    Our Memories
+                </h1>
+                <p class="font-serif italic text-lg md:text-xl lg:text-2xl text-cream opacity-90 mb-6">
+                    "The story that couldn't continue..."
                 </p>
-                <p class="font-serif italic text-base md:text-xl text-cream/70 mt-6 md:mt-8 leading-relaxed font-light tracking-wide">
-                    Tapi sekarang semua musnah, sepertinya sulit untuk memulai kembali.
-                </p>
-            </div>
+                <div class="inline-block bg-black/20 backdrop-blur-sm px-6 py-4 rounded-lg border border-white/10 mx-4 shadow-xl">
+                    <p class="text-xs md:text-base font-light tracking-widest uppercase text-cream/70">
+                        <i class="fa-solid fa-heart-crack text-red-900 mr-2"></i>
+                        chakas & sarah
+                        <i class="fa-solid fa-heart-crack text-red-900 ml-2"></i>
+                    </p>
+                </div>
+            </header>
 
-        </main>
+            <main class="container mx-auto px-4 pb-24 relative z-10">
+                
+                <!-- Kumpulan Bingkai Foto Terakhir -->
+                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 max-w-5xl mx-auto mb-16 mt-8">
+                    <!-- Bingkai 1 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/polaroid.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/polaroid.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 1">
+                        </div>
+                    </div>
+                    
+                    <!-- Bingkai 2 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/grid2.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/grid2.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 2">
+                        </div>
+                    </div>
 
-        <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
-    <footer class="text-center pb-8 text-cream/70 text-sm font-light relative z-10">
-        <p>Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> for us.</p>
-    </footer>
-    </div> <!-- Penutup bungkus transisi galeri -->
+                    <!-- Bingkai 3 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/ss1.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/ss1.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 3">
+                        </div>
+                    </div>
+
+                    <!-- Bingkai 4 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/ss2.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/ss2.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 4">
+                        </div>
+                    </div>
+
+                    <!-- Bingkai 5 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/ss3.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/ss3.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 5">
+                        </div>
+                    </div>
+
+                    <!-- Bingkai 6 -->
+                    <div class="w-[75%] sm:w-64 md:w-[19rem] flex flex-col items-center">
+                        <div class="photo-card w-full cursor-pointer hover:z-20 transition-all duration-300" onclick="openModal('https://xxnameless21.github.io/Koleksi-foto/moment1.jpg')">
+                            <img src="https://xxnameless21.github.io/Koleksi-foto/moment1.jpg" class="w-full aspect-[3/4] object-cover rounded" alt="Memori Terakhir 6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pesan Perpisahan Terakhir -->
+                <div class="mt-8 md:mt-12 text-center px-6 max-w-3xl mx-auto">
+                    <p class="font-serif italic text-lg md:text-2xl text-cream/90 leading-relaxed font-light tracking-wide mb-8 md:mb-10">
+                        "Meskipun cerita kita harus berhenti di sini, terima kasih sudah pernah menjadi bab paling indah yang selalu ingin aku baca ulang. Berbahagialah selalu, di manapun kamu berada."
+                    </p>
+                    <p class="font-serif italic text-base md:text-xl text-cream/70 leading-relaxed font-light tracking-wide">
+                        "Pada akhirnya, kita memang tidak ditakdirkan untuk tiba di tujuan yang sama. Tapi terima kasih, karena perjalanan singkat bersamamu adalah salah satu yang terbaik."
+                    </p>
+                </div>
+
+                <!-- Tombol Kembali -->
+                <div class="mt-20 text-center">
+                    <button onclick="goToPage1()" class="bg-black/30 hover:bg-black/50 backdrop-blur-md border border-white/20 text-cream/80 px-8 py-3 rounded-full shadow-lg transition-all duration-300 font-serif tracking-widest text-sm hover:scale-105">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> KEMBALI
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div> <!-- Penutup container aplikasi -->
 
     <!-- Modal for viewing full images -->
     <div id="imageModal" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
@@ -301,23 +370,242 @@
         <!-- Image container -->
         <div class="relative w-full h-full flex flex-col items-center justify-center" onclick="closeModal()">
             <img id="modalImage" src="" alt="Full size image" class="modal-content rounded-lg shadow-2xl border-4 border-white/10" onclick="event.stopPropagation();">
-            <!-- Tambahan tag video untuk modal mp4 -->
             <video id="modalVideo" src="" class="modal-content rounded-lg shadow-2xl border-4 border-white/10 hidden" controls autoplay onclick="event.stopPropagation();"></video>
         </div>
     </div>
 
     <script>
-        // Create floating hearts animation in the background
+        // 1. Deklarasi Variabel Utama di Scope Global
+        let isMusicPlaying = false;
+        let currentPage = 1;
+        
+        const bgMusic = document.getElementById('bgMusic');
+        const bgMusic2 = document.getElementById('bgMusic2');
+        const musicIcon = document.getElementById('musicIcon');
+        const openingScreen = document.getElementById('openingScreen');
+        const typingScreen = document.getElementById('typingScreen');
+        const typingText = document.getElementById('typingText');
+
+        // ==========================================
+        // FUNGSI MUSIK (Memperbaiki Error toggleMusic)
+        // ==========================================
+        window.toggleMusic = function() {
+            // Tentukan lagu mana yang harus dikontrol berdasarkan halaman aktif
+            const activeMusic = (currentPage === 1) ? bgMusic : bgMusic2;
+            
+            if (isMusicPlaying) {
+                // Pause musik
+                activeMusic.pause();
+                musicIcon.className = 'fa-solid fa-music text-xl group-hover:scale-110 transition-transform';
+            } else {
+                // Play musik
+                activeMusic.play().catch(e => console.log("Gagal play musik:", e));
+                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        };
+
+        // ==========================================
+        // FUNGSI TRANSISI HALAMAN
+        // ==========================================
+        window.goToPage2 = function() {
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+
+            // 1. Geser Halaman 1 ke kiri dan hilangkan
+            page1.classList.remove('translate-x-0', 'opacity-100');
+            page1.classList.add('-translate-x-full', 'opacity-0');
+
+            setTimeout(() => {
+                // Sembunyikan page 1, tampilkan page 2
+                page1.classList.add('hidden');
+                page2.classList.remove('hidden');
+                
+                // Trigger Reflow agar browser membaca perubahan display
+                void page2.offsetWidth;
+
+                // 2. Munculkan Halaman 2 dari kanan
+                page2.classList.remove('translate-x-full', 'opacity-0');
+                page2.classList.add('translate-x-0', 'opacity-100');
+
+                currentPage = 2;
+                
+                // 3. Ganti Musik (Seandainya -> Bernadya)
+                if (isMusicPlaying) {
+                    bgMusic.pause();
+                    bgMusic2.currentTime = 0;
+                    bgMusic2.play().catch(e => console.log(e));
+                }
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 700);
+        };
+
+        window.goToPage1 = function() {
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+
+            // 1. Geser Halaman 2 ke kanan
+            page2.classList.remove('translate-x-0', 'opacity-100');
+            page2.classList.add('translate-x-full', 'opacity-0');
+
+            setTimeout(() => {
+                // Sembunyikan page 2, tampilkan page 1
+                page2.classList.add('hidden');
+                page1.classList.remove('hidden');
+                
+                // Trigger Reflow
+                void page1.offsetWidth;
+
+                // 2. Munculkan Halaman 1 dari kiri
+                page1.classList.remove('-translate-x-full', 'opacity-0');
+                page1.classList.add('translate-x-0', 'opacity-100');
+
+                currentPage = 1;
+                
+                // 3. Ganti Musik Kembali (Bernadya -> Seandainya)
+                if (isMusicPlaying) {
+                    bgMusic2.pause();
+                    bgMusic.currentTime = 0;
+                    bgMusic.play().catch(e => console.log(e));
+                }
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 700);
+        };
+
+        // ==========================================
+        // FUNGSI MODAL (KLIK FOTO / VIDEO)
+        // ==========================================
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalVid = document.getElementById('modalVideo');
+
+        window.openModal = function(mediaSrc) {
+            // Cek apakah file adalah video mp4
+            if (mediaSrc.toLowerCase().endsWith('.mp4')) {
+                modalImg.classList.add('hidden');
+                modalVid.classList.remove('hidden');
+                modalVid.src = mediaSrc;
+            } else {
+                modalVid.classList.add('hidden');
+                modalImg.classList.remove('hidden');
+                modalImg.src = mediaSrc;
+            }
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeModal = function() {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalImg.src = ''; 
+                
+                modalVid.pause();
+                modalVid.src = ''; 
+                
+                document.body.style.overflow = 'auto';
+            }, 300);
+        };
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && !modal.classList.contains('hidden')) {
+                window.closeModal();
+            }
+        });
+
+        // ==========================================
+        // FUNGSI LAYAR PEMBUKA & MENGETIK
+        // ==========================================
+        const emotionalText = "Aku sadar, waktu sering kali berjalan terlalu cepat.\nMengubah momen menjadi kenangan yang samar,\ndan menyisakan rindu yang kadang tak sempat terucap...\n\nSatu hal yang harus kamu tahu...\nKe mana pun kakimu melangkah nanti,\natau seberat apa pun hari yang kamu lewati,\nkamu tidak akan pernah sendirian.\nKarena aku akan selalu siap menjadi tempat teduhmu,\ndan rumah tempatmu pulang.";
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < emotionalText.length) {
+                let char = emotionalText.charAt(charIndex);
+                
+                if (char === '\n') {
+                    typingText.innerHTML += '<br>';
+                } else {
+                    typingText.innerHTML += char;
+                }
+                charIndex++;
+                
+                // Kecepatan mengetik
+                let speed = 60;
+                if (char === '.' || char === ',') {
+                    speed = 400; // Jeda saat tanda baca
+                } else {
+                    speed += Math.random() * 30; 
+                }
+                
+                setTimeout(typeWriter, speed);
+            } else {
+                typingText.classList.remove('typing-cursor');
+                
+                // Selesai mengetik, tunggu lalu hilangkan layar hitam
+                setTimeout(() => {
+                    typingScreen.classList.remove('opacity-100');
+                    typingScreen.classList.add('opacity-0');
+                    
+                    setTimeout(() => {
+                        typingScreen.style.display = 'none';
+                    }, 2000);
+                }, 4000);
+            }
+        }
+
+        // Jalankan animasi ketik saat halaman dimuat
+        window.onload = () => {
+            setTimeout(typeWriter, 1000);
+        };
+
+        // Ketika layar pembuka READY diklik
+        openingScreen.addEventListener('click', function() {
+            // Jalankan lagu
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
+            }).catch((error) => {
+                console.log("Autoplay blocked.");
+            });
+
+            // Efek transisi layar pembuka
+            openingScreen.classList.remove('opacity-100');
+            openingScreen.classList.add('opacity-0', 'scale-150', 'blur-md');
+            
+            // Efek galeri utama muncul
+            const appContainer = document.getElementById('appContainer');
+            setTimeout(() => {
+                appContainer.classList.remove('opacity-0', 'translate-y-12');
+                appContainer.classList.add('opacity-100', 'translate-y-0');
+            }, 300);
+
+            setTimeout(() => {
+                openingScreen.style.display = 'none';
+            }, 1000);
+        });
+
+        // ==========================================
+        // FUNGSI ANIMASI HATI (HEARTS) DI BACKGROUND
+        // ==========================================
         function createHearts() {
             const container = document.getElementById('hearts-container');
-            const heartCount = 15; // Number of hearts on screen
+            const heartCount = 15;
 
             for (let i = 0; i < heartCount; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('i');
                     heart.className = 'fa-solid fa-heart floating-heart';
                     
-                    // Randomize position, size, and animation duration
                     const leftPos = Math.random() * 100;
                     const size = Math.random() * 20 + 10;
                     const duration = Math.random() * 10 + 15;
@@ -330,12 +618,11 @@
 
                     container.appendChild(heart);
 
-                    // Remove heart after animation and create a new one to loop
                     heart.addEventListener('animationend', () => {
                         heart.remove();
                         createSingleHeart(container);
                     });
-                }, i * 1000); // Stagger initial spawn
+                }, i * 1000);
             }
         }
 
@@ -357,155 +644,8 @@
             });
         }
 
-        // Initialize background hearts
+        // Mulai animasi hati
         createHearts();
-
-        // Modal (Lightbox) Logic
-        const modal = document.getElementById('imageModal');
-        const modalImg = document.getElementById('modalImage');
-        const modalVid = document.getElementById('modalVideo');
-
-        function openModal(mediaSrc) {
-            // Cek apakah file adalah video mp4
-            if (mediaSrc.toLowerCase().endsWith('.mp4')) {
-                modalImg.classList.add('hidden');
-                modalVid.classList.remove('hidden');
-                modalVid.src = mediaSrc;
-            } else {
-                modalVid.classList.add('hidden');
-                modalImg.classList.remove('hidden');
-                modalImg.src = mediaSrc;
-            }
-            
-            modal.classList.remove('hidden');
-            // Small delay to allow display block to apply before changing opacity for transition
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.classList.add('opacity-100');
-            }, 10);
-            
-            // Prevent scrolling on background when modal is open
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            modal.classList.remove('opacity-100');
-            modal.classList.add('opacity-0');
-            
-            // Wait for transition to finish before hiding element
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modalImg.src = ''; // Clear source to prevent flashing next time
-                
-                // Matikan dan kosongkan video
-                modalVid.pause();
-                modalVid.src = ''; 
-                
-                // Restore scrolling
-                document.body.style.overflow = 'auto';
-            }, 300);
-        }
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape" && !modal.classList.contains('hidden')) {
-                closeModal();
-            }
-        });
-
-        // Music Player & Opening Logic
-        const bgMusic = document.getElementById('bgMusic');
-        const musicIcon = document.getElementById('musicIcon');
-        const openingScreen = document.getElementById('openingScreen');
-        let isMusicPlaying = false;
-
-        function toggleMusic() {
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                musicIcon.className = 'fa-solid fa-music text-xl group-hover:scale-110 transition-transform';
-            } else {
-                bgMusic.play();
-                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
-            }
-            isMusicPlaying = !isMusicPlaying;
-        }
-
-        // Ketika layar pembuka diklik di mana saja
-        openingScreen.addEventListener('click', function() {
-            // 1. Jalankan lagu
-            bgMusic.play().then(() => {
-                isMusicPlaying = true;
-                musicIcon.className = 'fa-solid fa-compact-disc text-xl group-hover:scale-110 transition-transform animate-spin';
-            }).catch((error) => {
-                console.log("Autoplay blocked.");
-            });
-
-            // 2. Efek transisi layar pembuka (Zoom in, efek blur, dan fade out)
-            openingScreen.classList.remove('opacity-100');
-            openingScreen.classList.add('opacity-0', 'scale-150', 'blur-md');
-            
-            // 3. Efek galeri utama muncul perlahan dari bawah ke atas
-            const mainGallery = document.getElementById('mainGallery');
-            setTimeout(() => {
-                mainGallery.classList.remove('opacity-0', 'translate-y-12');
-                mainGallery.classList.add('opacity-100', 'translate-y-0');
-            }, 300); // Galeri mulai muncul sedikit sebelum layar merah benar-benar menghilang
-
-            // 4. Hapus elemen dari HTML setelah animasi fade selesai
-            setTimeout(() => {
-                openingScreen.style.display = 'none';
-            }, 1000); // 1000ms = 1 detik, sesuai dengan durasi transisi
-        });
-
-        const typingScreen = document.getElementById('typingScreen');
-        const typingText = document.getElementById('typingText');
-        
-        // Teks yang akan diketik (gunakan \n untuk baris baru)
-        const emotionalText = "Aku sadar, waktu sering kali berjalan terlalu cepat.\nMengubah momen menjadi kenangan yang samar,\ndan menyisakan rindu yang kadang tak sempat terucap...\n\nSatu hal yang harus kamu tahu...\nKe mana pun kakimu melangkah nanti,\natau seberat apa pun hari yang kamu lewati,\nkamu tidak akan pernah sendirian.\nKarena aku akan selalu siap menjadi tempat teduhmu,\ndan rumah tempatmu pulang.";
-        let charIndex = 0;
-
-        function typeWriter() {
-            if (charIndex < emotionalText.length) {
-                let char = emotionalText.charAt(charIndex);
-                
-                if (char === '\n') {
-                    typingText.innerHTML += '<br>';
-                } else {
-                    typingText.innerHTML += char;
-                }
-                charIndex++;
-                
-                // Kecepatan mengetik 1x (normal)
-                let speed = 60; // Kecepatan dasar normal
-                if (char === '.' || char === ',') {
-                    speed = 400; // Jeda saat tanda baca
-                } else {
-                    speed += Math.random() * 30; // Sedikit variasi agar terlihat natural
-                }
-                
-                setTimeout(typeWriter, speed);
-            } else {
-                // Selesai mengetik, hilangkan kursor
-                typingText.classList.remove('typing-cursor');
-                
-                // Tunggu 4 detik agar teks bisa dibaca dan diresapi, lalu fade out
-                setTimeout(() => {
-                    typingScreen.classList.remove('opacity-100');
-                    typingScreen.classList.add('opacity-0');
-                    
-                    // Hilangkan dari DOM setelah fade out selesai (durasi transisi 2 detik)
-                    setTimeout(() => {
-                        typingScreen.style.display = 'none';
-                    }, 2000);
-                }, 4000);
-            }
-        }
-
-        // Mulai efek mengetik saat website dimuat
-        window.onload = () => {
-            // Tunggu 1 detik dengan layar gelap gulita sebelum mulai mengetik
-            setTimeout(typeWriter, 1000);
-        };
 
     </script>
 </body>
